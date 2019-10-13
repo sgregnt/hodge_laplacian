@@ -1,0 +1,75 @@
+% inits 
+clc; clear; close all;
+import edu.stanford.math.plex4.*;
+
+% construct graph
+% get a new ExplicitSimplexStream
+stream = api.Plex4.createExplicitSimplexStream();
+
+% construct a circle with 5
+
+stream.addVertex(0);
+stream.addVertex(1);
+stream.addVertex(2);
+stream.addVertex(3);
+stream.addVertex(4);
+
+n1 = 5;  
+
+stream.addElement([0, 1]);
+stream.addElement([1, 2]);
+stream.addElement([2, 3]);
+stream.addElement([3, 0]);
+
+n2 = 4;
+
+% print out the total number of simplices in the complex
+num_simplices = stream.getSize()
+
+% get persistence algorithm over Z/2Z
+persistence = api.Plex4.getModularSimplicialAlgorithm(3, 2);
+
+% compute and print the intervals
+circle_intervals = persistence.computeIntervals(stream);
+
+% sparse boundary formal sum
+d_1 = streams.utility.StreamUtility.createBoundaryMatrixAsDoubleSum(stream, 1);
+
+% convert from sparse form to array
+converter = api.Plex4.createHomMatrixConverter(stream, stream);
+d_1_array = converter.toArray(d_1);
+d_1_array_incidence = transpose(d_1_array);
+
+% Boundary 1
+B1 = get_boundary_k(stream, n1, n2);
+L0 = transpose(B1)* B1;
+SL0 = sparse(L0);
+[V,D] = eig(L0);
+
+
+% example with point cloud data
+
+% circle
+r = 1; % radius
+theta = 2 * pi.* linspace(0, 360, 8) ./ 360;  
+m = r * [cos(theta') sin(theta')];
+m = [1 0; 2 0; 3 0] 
+point_cloud = m;
+
+figure()
+scatter(m(:,1), m(:,2), '.');
+axis equal
+
+m_space = metric.impl.EuclideanMetricSpace(m);
+
+% point_cloud, max_d, max_t, num_divisions
+max_dimension = 1;
+max_filtration = 2 * r;
+num_divisions = 100; 
+stream = api.Plex4.createVietorisRipsStream(point_cloud, max_dimension, max_filtration);
+
+d_1 = streams.utility.StreamUtility.createBoundaryMatrixAsDoubleSum(stream, 1);
+converter = api.Plex4.createHomMatrixConverter(stream, stream);
+d_1_array = converter.toArray(d_1);
+d_1_array_incidence = transpose(d_1_array);
+stream.getSize()

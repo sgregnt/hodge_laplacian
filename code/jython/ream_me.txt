@@ -1,0 +1,7 @@
+This is how to run jython:
+
+java -jar C:\jython2.5.2\jython.jar C:\test\test.py
+
+See also:
+
+https://stackoverflow.com/questions/27152356/jython-installation-and-running-beginner-issues
